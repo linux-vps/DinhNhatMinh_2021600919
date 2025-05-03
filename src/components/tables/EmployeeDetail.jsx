@@ -1,13 +1,60 @@
-import React from 'react';
-import { Modal, Button } from "@/components/reactdash-ui";
+import React, { useEffect } from 'react';
+import Modal from 'react-modal';
+import { X, PencilSquare, TrashFill } from 'react-bootstrap-icons';
+import { Button } from "@/components/reactdash-ui";
 
-export default function EmployeeDetail({ employee, trigger }) {
+// Đảm bảo Modal được thiết lập đúng
+Modal.setAppElement('#root');
+
+// Styles cho modal
+const customStyles = {
+    content: {
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)',
+        maxWidth: '700px',
+        width: '100%',
+        padding: '20px',
+        maxHeight: '90vh',
+        overflow: 'auto'
+    },
+    overlay: {
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        zIndex: 1000
+    }
+};
+
+export default function EmployeeDetail({ isOpen, onClose, employee, onEdit, onDelete }) {
+    console.log("EmployeeDetail render - isOpen:", isOpen, "employee:", employee?.id);
+
+    useEffect(() => {
+        console.log("EmployeeDetail effect - isOpen changed to:", isOpen);
+    }, [isOpen]);
+
+    if (!employee) return null;
+
     return (
-        <Modal 
-            btn_text={trigger}
-            btn_color="white"
-            title="Chi tiết nhân viên"
+        <Modal
+            isOpen={isOpen}
+            onRequestClose={onClose}
+            style={customStyles}
+            contentLabel="Chi tiết nhân viên"
+            ariaHideApp={false} // Tạm thời bỏ qua cảnh báo ariaHideApp
         >
+            <div className="modal-header flex justify-between items-center border-b pb-3 mb-4">
+                <h3 className="text-xl font-semibold">Chi tiết nhân viên</h3>
+                <button
+                    onClick={onClose}
+                    className="text-gray-400 hover:text-gray-600"
+                    aria-label="Đóng"
+                >
+                    <X size={24} />
+                </button>
+            </div>
+
             <div className="p-6">
                 <div className="flex items-start space-x-6">
                     {/* Avatar Section */}
@@ -15,24 +62,26 @@ export default function EmployeeDetail({ employee, trigger }) {
                         <div className="relative">
                             <img
                                 src={employee?.avatar || 'https://via.placeholder.com/150'}
-                                alt={employee?.name}
+                                alt={`${employee?.firstName} ${employee?.lastName}`}
                                 className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg"
                             />
-                            <span className="absolute bottom-0 right-0 w-4 h-4 bg-green-400 border-2 border-white rounded-full"></span>
+                            <span className={`absolute bottom-0 right-0 w-4 h-4 ${employee?.isActive ? 'bg-green-400' : 'bg-red-400'} border-2 border-white rounded-full`}></span>
                         </div>
                     </div>
 
                     {/* Basic Info Section */}
                     <div className="flex-1">
                         <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                            {employee?.name}
+                            {`${employee?.firstName || ''} ${employee?.lastName || ''}`}
                         </h3>
                         <p className="text-sm text-gray-500 dark:text-gray-400">
                             {employee?.email}
                         </p>
                         <div className="mt-2">
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                Hoạt động
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                employee?.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                            }`}>
+                                {employee?.isActive ? 'Đang làm việc' : 'Đã nghỉ việc'}
                             </span>
                         </div>
                     </div>
@@ -45,10 +94,18 @@ export default function EmployeeDetail({ employee, trigger }) {
                             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                                 <tr>
                                     <td className="py-2 text-sm font-medium text-gray-500 dark:text-gray-400">
+                                        Mã nhân viên
+                                    </td>
+                                    <td className="py-2 text-sm text-gray-900 dark:text-white">
+                                        {employee?.id}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td className="py-2 text-sm font-medium text-gray-500 dark:text-gray-400">
                                         Giới tính
                                     </td>
                                     <td className="py-2 text-sm text-gray-900 dark:text-white">
-                                        {employee?.gender === 'female' ? 'Nữ' : 'Nam'}
+                                        {employee?.gender === 'Nam' || employee?.gender === 'Male' || employee?.gender === 'male' ? 'Nam' : employee?.gender === 'Nữ' || employee?.gender === 'Female' || employee?.gender === 'female' ? 'Nữ' : '-'}
                                     </td>
                                 </tr>
                                 <tr>
@@ -56,7 +113,7 @@ export default function EmployeeDetail({ employee, trigger }) {
                                         Ngày sinh
                                     </td>
                                     <td className="py-2 text-sm text-gray-900 dark:text-white">
-                                        {employee?.date_of_birth}
+                                        {employee?.dateOfBirth || '-'}
                                     </td>
                                 </tr>
                                 <tr>
@@ -64,7 +121,7 @@ export default function EmployeeDetail({ employee, trigger }) {
                                         Số điện thoại
                                     </td>
                                     <td className="py-2 text-sm text-gray-900 dark:text-white">
-                                        {employee?.phone}
+                                        {employee?.phone || '-'}
                                     </td>
                                 </tr>
                             </tbody>
@@ -76,18 +133,26 @@ export default function EmployeeDetail({ employee, trigger }) {
                             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                                 <tr>
                                     <td className="py-2 text-sm font-medium text-gray-500 dark:text-gray-400">
-                                        Trường đại học
+                                        Phòng ban
                                     </td>
                                     <td className="py-2 text-sm text-gray-900 dark:text-white">
-                                        {employee?.university}
+                                        {employee?.department?.name || '-'}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td className="py-2 text-sm font-medium text-gray-500 dark:text-gray-400">
-                                        Tên đăng nhập
+                                        Lương
                                     </td>
                                     <td className="py-2 text-sm text-gray-900 dark:text-white">
-                                        {employee?.username}
+                                        {employee?.salary ? `${Number(employee.salary).toLocaleString('vi-VN')} VNĐ` : '-'}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td className="py-2 text-sm font-medium text-gray-500 dark:text-gray-400">
+                                        Ngày vào làm
+                                    </td>
+                                    <td className="py-2 text-sm text-gray-900 dark:text-white">
+                                        {employee?.hireDate || '-'}
                                     </td>
                                 </tr>
                             </tbody>
@@ -101,10 +166,43 @@ export default function EmployeeDetail({ employee, trigger }) {
                         </h4>
                         <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
                             <p className="text-sm text-gray-900 dark:text-white">
-                                {employee?.address}, {employee?.ward}, {employee?.district}, {employee?.province}
+                                {employee?.address || '-'}
                             </p>
                         </div>
                     </div>
+                </div>
+
+                {/* Button Actions */}
+                <div className="mt-6 flex justify-end space-x-3">
+                    <Button
+                        color="secondary"
+                        onClick={onClose}
+                        type="button"
+                    >
+                        Đóng
+                    </Button>
+                    <Button
+                        color="warning"
+                        onClick={() => {
+                            onClose();
+                            onEdit && onEdit(employee);
+                        }}
+                        type="button"
+                    >
+                        <PencilSquare className="w-4 h-4 mr-2" />
+                        Chỉnh sửa
+                    </Button>
+                    <Button
+                        color="danger"
+                        onClick={() => {
+                            onClose();
+                            onDelete && onDelete(employee);
+                        }}
+                        type="button"
+                    >
+                        <TrashFill className="w-4 h-4 mr-2" />
+                        Xóa
+                    </Button>
                 </div>
             </div>
         </Modal>

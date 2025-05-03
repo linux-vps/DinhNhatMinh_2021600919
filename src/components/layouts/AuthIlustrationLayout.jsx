@@ -1,7 +1,7 @@
 import React from 'react';
-import NavbarLogin from '@/components/navbar/NavbarLogin';
-import Footer from '@/components/footer/Footer';
-import { Column, Row } from '@/components/reactdash-ui';
+import NavbarLogin from '../navbar/NavbarLogin';
+import Footer from '../footer/Footer';
+import { Column, Row } from '../reactdash-ui';
 
 export default function AuthIlustrationLayout(props) {
   const cover = {img:"/img/ilustration/presentation.png", alt:"welcome",title:"Manage your business easily and safely", description:"Managing a business is not as easy as it is today. You can view and manage all reports in a simple and practical way."}

@@ -9,7 +9,10 @@
     <title>Reactdash - React Dashboard Template</title>
   </head>
   <body class="font-sans text-base font-normal text-gray-600 dark:text-gray-400 dark:bg-gray-800">
-    <div id="root"></div>
+    <!-- Container chính cho ứng dụng React, đảm bảo nó được định vị đúng -->
+    <div id="root" class="h-full w-full"></div>
+    <!-- Container cho các modal, để tránh xung đột style -->
+    <div id="modal-root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

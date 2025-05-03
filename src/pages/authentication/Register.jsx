@@ -1,56 +1,127 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { BoxArrowInRight, Facebook, Twitter } from 'react-bootstrap-icons';
-import { Button, Heading, InputLabel, Radio, Checkbox, InputPassword  } from '@/components/reactdash-ui';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Input, Button } from "@/components/reactdash-ui";
+import APIService from '@/services/APIService';
 
 export default function Register() {
-  const register = {
-    login: "Login", link_login: "/auth/login", register: "Register", register_link: "/", agree_text: "I agree to the Terms and Conditions", or: "Or", already: "Already have an account?", join_fb: "Join with FB", join_twitter: "Join with Twitter", footer_copyright: "Tailnet | All right reserved"
-  }
-  const options = [
-    { id: 123, value: 'blues', title: 'Blues' },
-    { id: 124, value: 'rock', title: 'Rock' },
-    { id: 125, value: 'jazz', title: 'Jazz' }
-  ]
-  
-  return (
-    <>
-      <Heading variant="h3" className="text-center">Join Now</Heading>
-      <hr className="block w-12 h-0.5 mx-auto my-5 bg-gray-700 border-gray-700" />
-      <form>
-        <InputLabel label="Full Name" id="input1" name="fullname" />
-        <InputLabel type="email" label="Email" id="input2" name="email" />
-        <InputPassword type="password" label="Password" id="input3" name="password" />
-        <InputPassword type="password" label="Repeat Password" id="input4" name="repassword" />
-        <Radio options={options} name="music" checked="rock" label="Music" />
-        <div className="mb-6">
-          <label className="flex flex-row items-center">
-            <Checkbox name="tos" value="1" required="true"/>
-            <p className="ml-2">I agree to the <a href="#">Terms and Conditions</a></p>
-          </label>
-        </div>
+    const navigate = useNavigate();
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        password: '',
+        confirmPassword: ''
+    });
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
-        <div className="grid">
-          <Button type="submit">
-            <BoxArrowInRight className="inline-block w-4 h-4 ltr:mr-2 rtl:ml-2" />Register
-          </Button>
-        </div>
-      </form>
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
 
-      <div className="mt-4">
-        <p className="text-center mb-3"><span>{register.or}</span></p>
-        <div className="text-center mb-6 sm:space-x-4">
-          <a className="p-2 block sm:inline-block rounded lg:rounded-full leading-5 text-gray-100 bg-indigo-900 border border-indigo-900 hover:text-white hover:opacity-90 hover:ring-0 hover:border-indigo-900 focus:bg-indigo-900 focus:border-indigo-800 focus:outline-none focus:ring-0 mb-3" href="#">
-            <Facebook className="inline-block w-4 h-4 mx-1" />
-            <span className="inline-block lg:hidden">{register.join_fb}</span>
-          </a>
-          <a className="p-2 block sm:inline-block rounded lg:rounded-full leading-5 text-gray-100 bg-indigo-500 border border-indigo-500 hover:text-white hover:bg-indigo-600 hover:ring-0 hover:border-indigo-600 focus:bg-indigo-600 focus:border-indigo-600 focus:outline-none focus:ring-0 mb-3" href="#">
-            <Twitter className="inline-block w-4 h-4 mx-1" />
-            <span className="inline-block lg:hidden">{register.join_twitter}</span>
-          </a>
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
+
+        if (formData.password !== formData.confirmPassword) {
+            setError('Mật khẩu không khớp');
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const { confirmPassword, ...registerData } = formData;
+            await APIService.register(registerData);
+            navigate('/auth/login');
+        } catch (err) {
+            setError(err.response?.data?.message || 'Đăng ký thất bại');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-md w-full space-y-8">
+                <div>
+                    <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                        Đăng ký tài khoản mới
+                    </h2>
+                </div>
+                <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+                    <div className="rounded-md shadow-sm -space-y-px">
+                        <div>
+                            <Input
+                                type="text"
+                                name="name"
+                                label="Họ và tên"
+                                value={formData.name}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <Input
+                                type="email"
+                                name="email"
+                                label="Email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <Input
+                                type="password"
+                                name="password"
+                                label="Mật khẩu"
+                                value={formData.password}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <Input
+                                type="password"
+                                name="confirmPassword"
+                                label="Xác nhận mật khẩu"
+                                value={formData.confirmPassword}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    {error && (
+                        <div className="text-red-500 text-sm text-center">
+                            {error}
+                        </div>
+                    )}
+
+                    <div>
+                        <Button
+                            type="submit"
+                            color="primary"
+                            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            disabled={loading}
+                        >
+                            {loading ? 'Đang đăng ký...' : 'Đăng ký'}
+                        </Button>
+                    </div>
+                </form>
+
+                <div className="text-center">
+                    <p className="text-sm text-gray-600">
+                        Đã có tài khoản?{' '}
+                        <Link to="/auth/login" className="font-medium text-indigo-600 hover:text-indigo-500">
+                            Đăng nhập
+                        </Link>
+                    </p>
+                </div>
+            </div>
         </div>
-        <p className="text-center mb-4">{register.already} <Link to={register.link_login} className="hover:text-indigo-500">{register.login}</Link></p>
-      </div>
-    </>
-  );
+    );
 }

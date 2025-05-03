@@ -1,26 +1,59 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { HouseDoor } from 'react-bootstrap-icons';
+import { HouseDoor, Person, Briefcase, Calendar, FileText, Gear, Bell } from 'react-bootstrap-icons';
 import { FiUsers, FiBriefcase } from 'react-icons/fi';
-import { SubmenuAccordion } from "@/components/reactdash-ui";
+import { SubmenuAccordion } from "../reactdash-ui";
 
 
 export default function Sidebar({ closeMobile, ...props }) {
   // Data sidebar menu (props.data)
   const sideitems = [
     {
-      id: 1, title: 'Dashboards', url: '/dashboard/', icon: <HouseDoor />,
-      
+      id: 1, 
+      title: 'Bảng điều khiển', 
+      url: '/admin', 
+      icon: <HouseDoor />,
     },
     {
-      id: 3, title: 'Quản lý nhân viên', url: '/employees/', icon: <FiUsers />,
-      
+      id: 2,
+      title: 'Quản lý nhân viên',
+      url: '/admin/employees',
+      icon: <Person />,
     },
     {
-      id: 4, title: 'Quản lý phòng ban', url: '/departments/', icon: <FiBriefcase />,
-      
+      id: 3,
+      title: 'Quản lý phòng ban',
+      url: '/admin/departments',
+      icon: <Briefcase />,
+    },
+    {
+      id: 4,
+      title: 'Chấm công',
+      url: '/admin/attendance',
+      icon: <Calendar />,
+    },
+    {
+      id: 5,
+      title: 'Nghỉ phép',
+      url: '/admin/leaves',
+      icon: <FileText />,
+    },
+    {
+      id: 6,
+      title: 'Lương',
+      url: '/admin/salaries',
+      icon: <Bell />,
+    },
+    {
+      id: 7,
+      title: 'Cài đặt',
+      url: '/admin/settings',
+      icon: <Gear />,
+      submenu: [
+        { id: 7.1, title: 'Cài đặt hệ thống', url: '/admin/settings/system' },
+        { id: 7.2, title: 'Cài đặt người dùng', url: '/admin/settings/user' }
+      ]
     }
- 
   ]
   // logo (props.logo)
   const logo = { img: '/img/logo.png', text: 'HRM System' }

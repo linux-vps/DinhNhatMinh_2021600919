@@ -1,69 +1,102 @@
 import { Dialog, Transition } from '@headlessui/react';
-import { Fragment, useState } from 'react';
+import { Fragment, useState, useEffect } from 'react';
 import { X } from 'react-bootstrap-icons';
 import { Button } from '@/components/reactdash-ui';
 
 export default function Modal(props) {
-  // Props ( btn_text, btn_color, title )
-  let [isOpen, setIsOpen] = useState(false)
+  // Props ( btn_text, btn_color, title, isOpen, onClose )
+  const [internalOpen, setInternalOpen] = useState(false);
+  
+  // Handle controlled vs uncontrolled mode
+  const isControlled = props.isOpen !== undefined;
+  const isDialogOpen = isControlled ? props.isOpen : internalOpen;
+  
+  console.log("Modal props:", { 
+    isControlled, 
+    isOpen: props.isOpen, 
+    isDialogOpen, 
+    title: props.title 
+  });
+
+  useEffect(() => {
+    console.log("Modal isOpen changed:", props.isOpen);
+  }, [props.isOpen]);
+
   // close 
   function closeModal() {
-    setIsOpen(false)
+    console.log("closeModal called");
+    if (isControlled) {
+      props.onClose && props.onClose();
+    } else {
+      setInternalOpen(false);
+    }
   }
+  
   // open
   function openModal() {
-    setIsOpen(true)
+    console.log("openModal called");
+    setInternalOpen(true);
+  }
+
+  // Render
+  if (!isControlled && !props.btn_text) {
+    return null; // Don't render anything in uncontrolled mode without a button
   }
 
   return (
     <>
+      {/* Only render button if btn_text is provided (uncontrolled mode) */}
+      {!isControlled && props.btn_text && (
       <div className="relative">
-        <Button  onClick={openModal} type="button" color={props.btn_color}>
-          {props.btn_text ? props.btn_text : 'Launch modal'}
+          <Button onClick={openModal} type="button" color={props.btn_color}>
+            {props.btn_text}
         </Button>
       </div>
+      )}
 
-      <Transition appear show={isOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-50" onClose={closeModal}>
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black bg-opacity-25" />
-          </Transition.Child>
-
-          <div className="fixed inset-0 overflow-y-auto">
-            <div className="z-50 relative p-3 mx-auto my-0 max-w-600 mt-12">
-              <Transition.Child
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
-              >
-                <Dialog.Panel className="min-w-500 bg-white rounded shadow-lg border flex flex-col overflow-hidden dark:bg-gray-800 dark:border-gray-700">
-                  <Dialog.Title as="h3"
-                    className="px-6 py-3 text-xl border-b dark:border-gray-700 font-bold">
-                    {props.title ? props.title : ''}
+      {isDialogOpen && (
+        <Dialog
+          as="div"
+          className="fixed inset-0 z-50 overflow-y-auto"
+          open={isDialogOpen}
+          onClose={closeModal}
+        >
+          <div className="min-h-screen px-4 text-center">
+            <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
+            
+            {/* This element is to trick the browser into centering the modal contents. */}
+            <span
+              className="inline-block h-screen align-middle"
+              aria-hidden="true"
+            >
+              &#8203;
+            </span>
+            
+            <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-lg">
+              <div className="flex justify-between items-center border-b pb-3 mb-4">
+                <Dialog.Title
+                  as="h3"
+                  className="text-lg font-medium leading-6 text-gray-900"
+                >
+                  {props.title || ""}
                   </Dialog.Title>
-                  <button onClick={closeModal} className="fill-current h-6 w-6 absolute ltr:right-0 rtl:left-0 top-0 m-3 font-3xl font-bold"><X /></button>
-                  {/* modal content */}
-                  <div className="px-6 py-3">
-                    {props.children ? props.children : '' }
+                <button
+                  type="button"
+                  className="rounded-md text-gray-400 hover:text-gray-500 focus:outline-none"
+                  onClick={closeModal}
+                >
+                  <span className="sr-only">Close</span>
+                  <X className="h-6 w-6" aria-hidden="true" />
+                </button>
+              </div>
+              
+              <div className="mt-2">
+                {props.children}
                   </div>
-                </Dialog.Panel>
-              </Transition.Child>
             </div>
           </div>
         </Dialog>
-      </Transition>
+      )}
     </>
-  )
+  );
 }

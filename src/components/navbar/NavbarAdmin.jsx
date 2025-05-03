@@ -13,7 +13,7 @@ export default function NavbarAdmin(props) {
   document.documentElement.classList.remove('dark')
 
   // Dropdown text Messages
-  const text_msg = { 
+const text_msg = {  
     title: "Messages", noMsg: "No Messages Yet", 
     notificon: <Envelope className="w-6 h-6" />,
     new_icon: <PencilSquare />, new_url: "/", 

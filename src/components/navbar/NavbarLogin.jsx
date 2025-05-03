@@ -1,11 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Logo from '@/components/navbar/Logo';
+import Logo from './Logo';
 
 export default function NavbarLogin(props) {
   const menu = [
-    {title: "Login", url: "/auth/login"},
-    {title: "Register", url: "/auth/register"}
+    {title: "Login", url: "/"},
+    {title: "Register", url: "/register"}
   ]
   
   return (
