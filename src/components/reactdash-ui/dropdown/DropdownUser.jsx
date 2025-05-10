@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, MenuButton, MenuItems, Transition } from '@headlessui/react';
 
-
 export default function DropdownUser(props) {
   // data admin
   const userAdmin = props.user;

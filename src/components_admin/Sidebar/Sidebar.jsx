@@ -1,10 +1,10 @@
 import React from "react";
 import {
   HouseDoor, Person, Briefcase, FileText, Bell, Gear , 
-  Calendar
+  Calendar,
 } from 'react-bootstrap-icons';
+import { Banner } from "@/components/widgets";
 import { SubmenuAccordion } from "@/components/reactdash-ui";
-import Banner from "./Banner";
 
 export default function Sidebar({ closeMobile, ...props }) {
   // Data sidebar menu (props.data)

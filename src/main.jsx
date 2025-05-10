@@ -1,18 +1,15 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App.jsx'
-import './assets/css/app.css'
-import Modal from 'react-modal'
 
-// Set app element để react-modal hoạt động đúng
-Modal.setAppElement('#root')
+// auth and routing 
+import App from '@/App'
 
-// Log để debug
-console.log("Mounting React app, root element:", document.getElementById('root'))
-console.log("Modal setting appElement to #root")
+// Styles 
+import '@/assets/css/app.css'
+import '@/assets/css/splide-override.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
       <App />
-  </React.StrictMode>,
+  </React.StrictMode>
 )

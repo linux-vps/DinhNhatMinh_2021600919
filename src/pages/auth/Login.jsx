@@ -1,91 +1,66 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button, Input, Card } from '@/components/reactdash-ui';
-import APIService from '@/services/APIService';
+import { Link, useNavigate } from 'react-router-dom';
+import { BoxArrowInRight, Facebook, Twitter } from 'react-bootstrap-icons';
+import { Button, Heading, Checkbox, InputLabel, InputPassword  } from '@/components/reactdash-ui';
+import AuthService from '@/service/AuthService';
+import AuthIlustrationLayout from '@/components_admin/layout/AuthIlustrationLayout';
 
 export default function Login() {
+  const logins = {
+    login: "Login", link_login: "/", forgot_link: "forgot", register: "Register", register_link: "/register", remember: "Remember me", or: "Or", dont: "Dont have an account?", login_fb: "Login with FB", login_twitter: "Login with Twitter"
+  }
+  const [error, setError] = useState("");
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError('');
-
+    const form = e.target;
+    const email = form.email.value;
+    const password = form.password.value;
     try {
-      const response = await APIService.login(formData);
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
-      navigate('/admin');
+      await AuthService.login({ email, password });
+      navigate("/admin");
     } catch (err) {
-      setError(err.response?.data?.message || 'Đăng nhập thất bại');
-    } finally {
-      setLoading(false);
+      setError("Đăng nhập thất bại! Vui lòng kiểm tra lại thông tin.");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
-      <Card className="w-full max-w-md p-8">
-        <h1 className="text-2xl font-bold text-center mb-6">Đăng nhập</h1>
-        
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            {error}
+    <AuthIlustrationLayout>
+      <Heading variant="h3" className="text-center">Login</Heading>
+      <hr className="block w-12 h-0.5 mx-auto my-5 bg-gray-700 border-gray-700" />
+      <form onSubmit={handleSubmit}>
+        <InputLabel type="email" name="email" label="Email" />
+        <div className="mb-4">
+          <div className="flex flex-row justify-between items-center mb-2">
+            <label htmlFor="inputpass" className="inline-block">Password</label>
+            <Link to={logins.forgot_link} className="hover:text-blue-700">Forgot password?</Link>
           </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <Input
-            type="email"
-            label="Email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-
-          <Input
-            type="password"
-            label="Mật khẩu"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-
-          <Button
-            type="submit"
-            color="primary"
-            className="w-full"
-            disabled={loading}
-          >
-            {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
-          </Button>
-        </form>
-
-        <div className="mt-4 text-center">
-          <p className="text-sm text-gray-600">
-            Chưa có tài khoản?{' '}
-            <a href="/register" className="text-indigo-600 hover:text-indigo-500">
-              Đăng ký
-            </a>
-          </p>
+          <InputPassword type="password" name="password" />
         </div>
-      </Card>
-    </div>
+        <Checkbox name="remember" label="Remember me" value="1"/>
+        {error && <div className="text-red-500 text-center mb-2">{error}</div>}
+        <div className="grid">
+          <Button type="submit">
+            <BoxArrowInRight className="inline-block w-4 h-4 ltr:mr-2 rtl:ml-2" />Login
+          </Button>
+        </div>
+      </form>
+
+      <div className="mt-4">
+        <p className="text-center mb-3"><span>{logins.or}</span></p>
+        <div className="text-center mb-6 sm:space-x-4">
+          <a className="p-2 block sm:inline-block rounded lg:rounded-full leading-5 text-gray-100 bg-indigo-900 border border-indigo-900 hover:text-white hover:opacity-90 hover:ring-0 hover:border-indigo-900 focus:bg-indigo-900 focus:border-indigo-800 focus:outline-none focus:ring-0 mb-3" href="#">
+            <Facebook className="inline-block w-4 h-4 mx-1" />
+            <span className="inline-block lg:hidden">{logins.login_fb}</span>
+          </a>
+          <a className="p-2 block sm:inline-block rounded lg:rounded-full leading-5 text-gray-100 bg-indigo-500 border border-indigo-500 hover:text-white hover:bg-indigo-600 hover:ring-0 hover:border-indigo-600 focus:bg-indigo-600 focus:border-indigo-600 focus:outline-none focus:ring-0 mb-3" href="#">
+            <Twitter className="inline-block w-4 h-4 mx-1" />
+            <span className="inline-block lg:hidden">{logins.login_twitter}</span>
+          </a>
+        </div>
+        <p className="text-center mb-4">{logins.dont} <Link to={logins.register_link} className="hover:text-indigo-500">{logins.register}</Link></p>
+      </div>
+    </AuthIlustrationLayout>
   );
-} 
+}

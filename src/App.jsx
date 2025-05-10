@@ -1,27 +1,25 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import AdminCompact from './components/layouts/AdminCompact';
-import AuthIlustration from './views/AuthIlustration';
-import EmployeeList from './pages/admin/EmployeeList';
-import DepartmentList from './pages/admin/DepartmentList';
-import AttendanceList from './pages/admin/AttendanceList';
-import LeaveList from './pages/admin/LeaveList';
-import SalaryList from './pages/admin/SalaryList';
-import Login from './pages/auth/Login';
-import Register from './pages/auth/Register';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-// Protected Route component
-const ProtectedRoute = ({ children }) => {
-  const isAuthenticated = localStorage.getItem('token');
-  return isAuthenticated ? children : <Navigate to="/" />;
+// layouts
+import AdminCompact from '@/components_admin/layout/AdminCompact';
+import Login from '@/pages/Auth/Login';
+import Register from '@/pages/Auth/Register';
+import ProtectedRoute from '@/components/ProtectedRoute';
+import Employee from '@/components_admin/Content/Employee/Employee';
+// Cấu hình future flags cho React Router
+const router = {
+  future: {
+    v7_startTransition: true,
+    v7_relativeSplatPath: true
+  }
 };
 
 export default function App() {
   return (
-    <Router>
+    <BrowserRouter {...router}>
       <Routes>
-        {/* Auth routes */}
-        <Route path="/*" element={<AuthIlustration />} />
+        {/* add routes with layouts */}
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
@@ -31,17 +29,11 @@ export default function App() {
             <AdminCompact />
           </ProtectedRoute>
         }>
-          <Route index element={<Navigate to="/admin/employees" />} />
-          <Route path="employees" element={<EmployeeList />} />
-          <Route path="departments" element={<DepartmentList />} />
-          <Route path="attendance" element={<AttendanceList />} />
-          <Route path="leaves" element={<LeaveList />} />
-          <Route path="salaries" element={<SalaryList />} />
+          <Route index element={<div>Dashboard</div>} />
+          <Route path="employees" element={<Employee />} />
+          <Route path="departments" element={<div>Departments</div>} />
         </Route>
-
-        {/* Redirect to login if route not found */}
-        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
-    </Router>
+    </BrowserRouter>
   )
 }

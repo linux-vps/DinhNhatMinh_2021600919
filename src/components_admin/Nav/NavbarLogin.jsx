@@ -4,8 +4,8 @@ import Logo from '@/components/navbar/Logo';
 
 export default function NavbarLogin(props) {
   const menu = [
-    {title: "Login", url: "/"},
-    {title: "Register", url: "/register"}
+    {title: "Login", url: "/auth/login"},
+    {title: "Register", url: "/auth/register"}
   ]
   
   return (

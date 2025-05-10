@@ -1,6 +1,6 @@
 import React from 'react';
 import NavbarLogin from '@/components/navbar/NavbarLogin';
-import Footer from '@/components/footer/Footer';
+import Footer from '@/components_admin/footer/Footer';
 import { Column, Row } from '@/components/reactdash-ui';
 
 export default function AuthIlustrationLayout(props) {

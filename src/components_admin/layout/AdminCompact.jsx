@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Outlet } from 'react-router-dom';
 // components
 import Sidebar from "@/components/sidebar/Sidebar";
 import NavbarAdmin from "@/components/navbar/NavbarAdmin";
@@ -21,7 +22,7 @@ export default function AdminCompact(props) {
         {/* main */}
         <main className="relative pt-20 pb-24 lg:pb-20 -mt-2">
 				  <div className="mx-auto p-2">
-            {props.children}
+          <Outlet />
           </div>
         </main>
 

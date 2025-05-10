@@ -48,7 +48,6 @@ import Column from "@/components/reactdash-ui/Column";
 import ListGroup from "@/components/reactdash-ui/ListGroup";
 import Maps from "@/components/reactdash-ui/maps/Maps";
 import Modal from "@/components/reactdash-ui/Modal";
-import Table, { TableHead, TableBody, TableRow, TableHeader, TableCell } from "@/components/reactdash-ui/Table";
 import SearchForm from "@/components/reactdash-ui/SearchForm";
 import Notif from "@/components/reactdash-ui/Notif";
 import OffCanvas from "@/components/reactdash-ui/OffCanvas";
@@ -74,6 +73,5 @@ export {
   Collapse, Dropdown, DropdownCustom, Uploader, DropdownMessage, DropdownNotif, DropdownUser, Blockquote, Display, Dropcap, Figure, Heading, Lead,
   Lists, Paragraph, Currency, ShortFormat, Checkbox, Input, InputPassword, InputColor, InputGroup, InputLabel, Radio, Range, Select, Switch, Textarea, ProgressSmall,
   ProgressUpDown, Rating, FaqCollapse, ListGroup, Maps, Modal, SearchForm, Notif, OffCanvas, OffCanvasMenu,
-  Pagination, Popover, Prism, Progress, Ribbon, Percent, Preloader, Spinner, SweetAlert, Tabs, Tooltip, Submenu, Devices, Row, Column, QuillEditor,
-  Table, TableHead, TableBody, TableRow, TableHeader, TableCell
+  Pagination, Popover, Prism, Progress, Ribbon, Percent, Preloader, Spinner, SweetAlert, Tabs, Tooltip, Submenu, Devices, Row, Column, QuillEditor
 }
