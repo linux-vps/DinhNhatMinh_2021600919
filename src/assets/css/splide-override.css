@@ -1,0 +1,15 @@
+/* Override splide.min.css -ms-high-contrast */
+@media (forced-colors: active) {
+  .splide__pagination__page {
+    border-color: CanvasText !important;
+  }
+  .splide__arrow {
+    border-color: CanvasText !important;
+  }
+  .splide__arrow svg {
+    fill: CanvasText !important;
+  }
+  .splide__pagination__page.is-active {
+    background: CanvasText !important;
+  }
+} 
