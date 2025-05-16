@@ -37,6 +37,12 @@ api.interceptors.response.use(
 // Auth APIs
 export const login = (credentials) => api.post('/auth/login', credentials);
 export const impersonateUser = (email) => api.post('/auth/impersonate', { email });
+export const getCurrentUserProfile = () => api.get('/employees/profile');
+export const updateUserProfile = (data) => api.patch('/employees/profile', data);
+export const forgotPassword = (email) => api.post('/auth/forgot-password', { email });
+export const verifyOtp = (email, otp) => api.post('/auth/verify-otp', { email, otp });
+export const changePassword = (currentPassword, newPassword) => 
+  api.post('/auth/change-password', { currentPassword, newPassword });
 
 // Manager APIs
 export const getManagers = () => api.get('/employees');

@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsEmail, IsDate, IsOptional, IsUUID, IsEnum, ValidateIf, IsDateString, Matches, IsNumber, Min, IsDecimal } from 'class-validator';
+import { IsNotEmpty, IsString, IsEmail, IsDate, IsOptional, IsUUID, IsEnum, ValidateIf, IsDateString, Matches, IsNumber, Min, IsDecimal, IsInt, IsBoolean } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { Role } from '../../../common/enums/role.enum';
 import { Position } from '../../../common/enums/position.enum';
@@ -107,11 +107,11 @@ export class CreateEmployeeDto {
   @IsString()
   workExperience?: string;
 
-  @ApiPropertyOptional({ description: 'Lương cơ bản', type: 'number', example: 10000000 })
+  @ApiPropertyOptional({ description: 'Lương cơ bản', type: 'number', example: 5000000 })
   @IsOptional()
-  @IsDecimal({ decimal_digits: '0,2' }, { message: 'baseSalary phải là số thập phân hợp lệ' })
-  @Transform(({ value }) => parseFloat(value))
-  baseSalary?: number;
+  @IsInt({ message: 'baseSalary phải là số nguyên' })
+  @Transform(({ value }) => parseInt(value))
+  baseSalary?: number = 5000000;
 
   @ApiPropertyOptional({ description: 'Số tài khoản ngân hàng', example: '1234567890' })
   @IsOptional()
@@ -132,4 +132,9 @@ export class CreateEmployeeDto {
   @IsOptional()
   @IsString()
   insuranceCode?: string;
+
+  @ApiPropertyOptional({ description: 'Trạng thái hoạt động', example: true })
+  @IsOptional()
+  @IsBoolean()
+  isActive?: boolean;
 }

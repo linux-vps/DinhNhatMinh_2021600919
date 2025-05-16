@@ -18,6 +18,7 @@ interface RequestWithUser extends Request {
     sub: string;
     role: string;
     departmentId?: string;
+    id?: string;
   };
 }
 
@@ -229,7 +230,17 @@ export class AuthController {
   @ApiResponse({ status: 401, description: 'Chưa đăng nhập' })
   @ApiResponse({ status: 404, description: 'Không tìm thấy nhân viên' })
   async changePassword(@Req() req: RequestWithUser, @Body() changePasswordDto: ChangePasswordDto) {
-    const employeeId = req.user.sub;
+    console.log('Request user object:', req.user);
+    
+    // Lấy ID từ request, hoặc từ token
+    const employeeId = req.user?.sub || req.user?.id;
+    
+    if (!employeeId) {
+      throw new UnauthorizedException('Không tìm thấy thông tin người dùng, vui lòng đăng nhập lại');
+    }
+    
+    console.log('Using employee ID for password change:', employeeId);
+    
     return await this.authService.changePassword(
       employeeId,
       changePasswordDto.currentPassword,

@@ -147,26 +147,71 @@ export class AuthService {
   }
 
   async changePassword(employeeId: string, currentPassword: string, newPassword: string): Promise<{ message: string }> {
+    if (!employeeId) {
+      throw new BadRequestException('ID của nhân viên không được cung cấp');
+    }
+    
+    console.log('Attempting to change password for employee:', employeeId);
+
     const employee = await this.employeeRepository.findOne({
       where: { id: employeeId },
+      select: ['id', 'email', 'password', 'fullName', 'role'] // Chỉ định rõ các trường cần lấy
     });
 
+    console.log('Database query result:', employee ? {
+      id: employee.id,
+      email: employee.email,
+      role: employee.role
+    } : 'Not found');
+
     if (!employee) {
+      console.log('Employee not found with ID:', employeeId);
       throw new NotFoundException('Nhân viên không tồn tại');
     }
 
+    // Log để debug (sẽ xóa sau khi fix xong)
+    console.log('Employee found:', { 
+      id: employee.id,
+      email: employee.email,
+      role: employee.role,
+      hashedPassword: employee.password.substring(0, 10) + '...' // Chỉ log một phần của hash để bảo mật
+    });
+
     // Kiểm tra mật khẩu hiện tại
     const isPasswordValid = await bcrypt.compare(currentPassword, employee.password);
+    
+    // Log kết quả so sánh (sẽ xóa sau khi fix xong)
+    console.log('Password comparison:', {
+      isValid: isPasswordValid
+    });
+
     if (!isPasswordValid) {
       throw new BadRequestException('Mật khẩu hiện tại không chính xác');
     }
 
-    // Hash mật khẩu mới
+    // Validate mật khẩu mới
+    if (!/^(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{6,}$/.test(newPassword)) {
+      throw new BadRequestException('Mật khẩu mới phải có ít nhất 6 ký tự, bao gồm chữ hoa, số và ký tự đặc biệt');
+    }
+
+    // Hash mật khẩu mới với salt rounds = 10
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     
     // Cập nhật mật khẩu
     employee.password = hashedPassword;
     await this.employeeRepository.save(employee);
+
+    // Gửi email thông báo đổi mật khẩu thành công
+    try {
+      await this.mailService.sendPasswordResetEmail(
+        employee.email,
+        employee.fullName || 'Người dùng',
+        newPassword
+      );
+    } catch (error) {
+      console.error('Failed to send password change notification:', error);
+      // Không throw error vì mật khẩu đã được đổi thành công
+    }
 
     return { message: 'Đổi mật khẩu thành công' };
   }

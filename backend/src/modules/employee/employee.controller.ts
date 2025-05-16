@@ -206,7 +206,7 @@ export class EmployeeController {
   }
 
   @Patch(':id')
-  @Roles(Role.ADMIN, Role.MANAGER)
+  @Roles(Role.ADMIN, Role.MANAGER, Role.USER)
   @ApiOperation({ summary: 'Cập nhật thông tin nhân viên', description: 'Admin có thể cập nhật bất kỳ nhân viên nào. Manager chỉ có thể cập nhật nhân viên trong phòng ban của họ.' })
   @ApiParam({ name: 'id', description: 'ID của nhân viên', type: 'string', format: 'uuid' })
   @ApiBody({

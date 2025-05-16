@@ -30,6 +30,11 @@ export class UpdateEmployeeDto extends PartialType(
   @Transform(({ value }) => value === '' ? null : value)
   address?: string | null;
 
+  @ApiPropertyOptional({ description: 'Đường dẫn đến ảnh đại diện', example: 'https://example.com/avatar.jpg' })
+  @IsOptional()
+  @IsString()
+  avatar?: string;
+
   @ApiPropertyOptional({ description: 'Số CMND/CCCD', example: '123456789012' })
   @IsOptional()
   @ValidateIf((o, v) => v !== null && v !== '')

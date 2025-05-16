@@ -5,6 +5,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import 'antd/dist/reset.css';
 import AdminLayout from './layouts/AdminLayout';
 import Login from './pages/Login';
+import ForgotPassword from './pages/ForgotPassword';
+import ChangePassword from './pages/ChangePassword';
 import AdminDashboard from './pages/admin/Dashboard';
 import ManagerDashboard from './pages/manager/Dashboard';
 import EmployeeDashboard from './pages/employee/Dashboard';
@@ -33,6 +35,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           
           {/* Admin Routes */}
           <Route path="/admin" element={
@@ -43,6 +46,7 @@ function App() {
             <Route index element={<AdminDashboard />} />
             <Route path="managers" element={<ManagerList />} />
             <Route path="departments" element={<DepartmentList />} />
+            <Route path="change-password" element={<ChangePassword />} />
           </Route>
 
           {/* Manager Routes */}
@@ -62,6 +66,7 @@ function App() {
             <Route path="timekeeping-records" element={<TimekeepingRecords />} />
             <Route path="salary" element={<SalaryCalculation />} />
             <Route path="payroll" element={<PayrollList />} />
+            <Route path="change-password" element={<ChangePassword />} />
           </Route>
 
           {/* Employee Routes */}
@@ -75,6 +80,7 @@ function App() {
             <Route path="projects" element={<EmployeeProjectList />} />
             <Route path="projects/:projectId/tasks" element={<EmployeeTaskList />} />
             <Route path="overdue-tasks" element={<EmployeeOverdueTasks />} />
+            <Route path="change-password" element={<ChangePassword />} />
           </Route>
 
           <Route path="/" element={<Navigate to="/login" replace />} />

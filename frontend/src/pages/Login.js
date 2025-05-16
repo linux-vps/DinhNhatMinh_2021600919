@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Toast } from '../components/Toast';
 
@@ -107,6 +107,12 @@ const Login = () => {
                           onChange={handleInputChange}
                           required
                         />
+                      </div>
+
+                      <div className="col-12">
+                        <div className="text-end">
+                          <Link to="/forgot-password" className="small">Quên mật khẩu?</Link>
+                        </div>
                       </div>
 
                       <div className="col-12">

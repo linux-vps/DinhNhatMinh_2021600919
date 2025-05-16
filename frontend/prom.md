@@ -1070,3 +1070,37 @@ curl -X 'PATCH' \
   }
 }
 Phân Công việc con và bình luận sử dụng lại bên MANAGER
+
+
+
+Luồng xử lý
+Người dùng click "Quên mật khẩu" trên trang đăng nhập
+Nhập email
+Hệ thống gửi OTP tới email
+Người dùng nhập OTP
+Hệ thống xác nhận OTP và gửi mật khẩu mới qua email
+Người dùng đăng nhập và đổi mật khẩu
+API Endpoints
+Yêu cầu OTP
+POST /auth/forgot-password
+Request: { "email": "example@domain.com" }
+Response: { "success": true, "message": "Mã OTP đã được gửi..." }
+Xác thực OTP
+POST /auth/verify-otp
+Request: { "email": "example@domain.com", "otp": "123456" }
+Response: { "success": true, "message": "Mật khẩu mới đã được gửi..." }
+Giao diện cần có
+Màn hình 1: Quên mật khẩu
+Trường nhập email
+Nút "Gửi mã OTP"
+Link quay lại đăng nhập
+Màn hình 2: Nhập OTP
+Hiển thị email đã nhập (disabled)
+Trường nhập OTP 6 số
+Đồng hồ đếm ngược 15 phút
+Nút "Xác nhận"
+Link gửi lại OTP
+Màn hình 3: Thông báo thành công
+Thông báo đã gửi mật khẩu mới
+Nút "Đăng nhập"
+
